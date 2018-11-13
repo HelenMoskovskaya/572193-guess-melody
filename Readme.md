@@ -1,7 +1,7 @@
 # Личный проект «Угадай мелодию» [![Build status][travis-image]][travis-url]
 
 * Студент: [Helen Moskovskaya](https://up.htmlacademy.ru/ecmascript/7/user/572193).
-* Наставник: `Неизвестно`.
+* Наставник: `Никита Ткачук`.
 
 ---
 
