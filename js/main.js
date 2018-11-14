@@ -56,13 +56,13 @@ const showScreen = (n) => {
 
 let currentScreen = 0;
 
-const nextScreen = () => {
+const showNextScreen = () => {
   currentScreen = currentScreen + 1;
   currentScreen = (currentScreen === screens.length) ? (screens.length - 1) : currentScreen;
   showScreen(currentScreen);
 };
 
-const previousScreen = () => {
+const showPreviousScreen = () => {
   currentScreen = currentScreen - 1;
   currentScreen = (currentScreen < 0) ? (currentScreen = 0) : currentScreen;
   showScreen(currentScreen);
@@ -71,10 +71,10 @@ const previousScreen = () => {
 const onSelectScreenKeyDown = (evt) => {
   switch (evt.keyCode) {
     case ArrowDirection.RIGHT_ARROW:
-      nextScreen();
+      showNextScreen();
       break;
     case ArrowDirection.LEFT_ARROW:
-      previousScreen();
+      showPreviousScreen();
       break;
   }
 };
@@ -83,15 +83,15 @@ const onSelectScreenClick = (evt) => {
   const activeButton = evt.target;
   switch (activeButton.textContent) {
     case ButtonContent.RIGHT_CONTENT:
-      nextScreen();
+      showNextScreen();
       break;
     case ButtonContent.LEFT_CONTENT:
-      previousScreen();
+      showPreviousScreen();
       break;
   }
 };
 
-showScreen(0);
+showScreen(currentScreen);
 arrowsBlockElement.querySelectorAll(`.arrows__btn`).forEach((button) => {
   button.addEventListener(`click`, onSelectScreenClick);
 });
