@@ -1,6 +1,11 @@
-'use strict';
+import showScreen from './action/show-screen.js';
+import welcomeScreen from './screens/welcome.js';
 
-const ArrowDirection = {
+
+showScreen(welcomeScreen);
+
+
+/*const ArrowDirection = {
   RIGHT_ARROW: 39,
   LEFT_ARROW: 37,
 };
@@ -96,3 +101,4 @@ arrowsBlockElement.querySelectorAll(`.arrows__btn`).forEach((button) => {
   button.addEventListener(`click`, onSelectScreenClick);
 });
 document.addEventListener(`keydown`, onSelectScreenKeyDown);
+*/
