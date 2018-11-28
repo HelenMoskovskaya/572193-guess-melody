@@ -46,19 +46,6 @@ gulp.task(`scripts`, () => {
     .pipe(gulp.dest(`build/js`));
 });
 
-gulp.task(`test`, function () {
-  return gulp
-  .src([`js/**/*.test.js`])
-  .pipe(rollup({
-    plugins: [
-      commonjs()
-    ]}, `cjs`))
-  .pipe(gulp.dest(`build/test`))
-  .pipe(mocha({
-    reporter: `spec`
-  }));
-});
-
 gulp.task(`imagemin`, [`copy`], () => {
   return gulp.src(`build/img/**/*.{jpg,png,gif}`).
     pipe(imagemin([
@@ -118,5 +105,15 @@ gulp.task(`build`, [`assemble`], () => {
   gulp.start(`imagemin`);
 });
 
-gulp.task(`test`, () => {
+gulp.task(`test`, function () {
+  return gulp
+  .src([`js/**/*.test.js`])
+  .pipe(rollup({
+    plugins: [
+      commonjs()
+    ]}, `cjs`))
+  .pipe(gulp.dest(`build/test`))
+  .pipe(mocha({
+    reporter: `spec`
+  }));
 });

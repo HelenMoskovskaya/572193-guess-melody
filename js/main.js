@@ -4,7 +4,6 @@ import welcomeScreen from './screens/welcome.js';
 
 showScreen(welcomeScreen);
 
-
 /*const ArrowDirection = {
   RIGHT_ARROW: 39,
   LEFT_ARROW: 37,
