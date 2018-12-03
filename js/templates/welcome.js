@@ -1,9 +1,8 @@
-import getElementFromTemplate from '../action/element-from-template.js';
-import showScreen from '../action/show-screen.js';
-import gameGenreScreenElement from './game-genre.js';
+import {renderElement} from '../utils.js';
+import {changeLevel} from '../game-control.js';
 
 
-const welcomeScreenElement = getElementFromTemplate(`
+const welcomeScreenTemplate = () => `
   <section class="welcome">
     <div class="welcome__logo"><img src="img/melody-logo.png" alt="Угадай мелодию" width="186" height="83"></div>
     <button class="welcome__button"><span class="visually-hidden">Начать игру</span></button>
@@ -15,14 +14,19 @@ const welcomeScreenElement = getElementFromTemplate(`
     </ul>
     <p class="welcome__text">Удачи!</p>
   </section>
-  `);
-const welcomeButtonElement = welcomeScreenElement.querySelector(`.welcome__button`);
+  `;
 
-const onWelcomeButtonClick = () => {
-  showScreen(gameGenreScreenElement);
+const initWelcomeScreen = () => {
+  const welcomeScreenElement = renderElement(welcomeScreenTemplate);
+  const welcomeButtonElement = welcomeScreenElement.querySelector(`.welcome__button`);
+
+  const onWelcomeButtonClick = () => {
+    changeLevel();
+  };
+
+  welcomeButtonElement.addEventListener(`click`, onWelcomeButtonClick);
+
+  return welcomeScreenElement;
 };
 
-welcomeButtonElement.addEventListener(`click`, onWelcomeButtonClick);
-
-
-export default welcomeScreenElement;
+export default initWelcomeScreen();
