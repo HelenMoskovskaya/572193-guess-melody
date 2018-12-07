@@ -59,44 +59,35 @@ export const changeLevel = (state) => {
 };
 
 export const showResult = (state) => {
+  const ResultSuccess = {
+    title: `Вы настоящий меломан!`,
+    textButton: `Сыграть ещё раз`,
+    resultTotal: `За 3 минуты и 25 секунд вы набрали ${countScore(state.userAnswersInfo, state.notes)} баллов (8 быстрых), совершив ${state.notes} ошибки`,
+    resultText: getStatResults(statistics, countScore(state.userAnswersInfo)),
+  };
 
-  const Titles = {
-  RESULT_SUCCESS: `Вы настоящий меломан!`,
-  FAIL_TRIES: `Какая жалость!`,
-  FAIL_TIME: `Увы и ах!`
-};
+  const FailTries = {
+    title: `Какая жалость!`,
+    textButton: `Попробовать ещё раз`,
+    resultTotal: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`,
+    resultText: ``
+  };
 
-const TextButtons = {
-  RESULT_SUCCESS: `Сыграть ещё раз`,
-  FAIL: `Попробовать ещё раз`
-};
+  const FailTime = {
+    title: `Увы и ах!`,
+    textButton: `Попробовать ещё раз`,
+    resultTotal: `Время вышло! Вы не успели отгадать все мелодии`,
+    resultText: ``
+  };
 
-const Content = {
-  RESULT_SUCCESS: getStatResults(statistics, countScore(state.userAnswersInfo)),
-  FAIL: ``,
-}
+  let data = {}
 
-const ResultTotal = {
-  RESULT_SUCCESS: `За 3 минуты и 25 секунд вы набрали ${countScore(state.userAnswersInfo, state.notes)} баллов (8 быстрых), совершив ${state.notes} ошибки`,
-  FAIL_TIME: `Время вышло! Вы не успели отгадать все мелодии`,
-  FAIL_TRIES: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`
-}
-  const data = {}
   if(state.notes >= GameInfo.MAX_NOTES) {
-    data.title = Titles.FAIL_TRIES
-    data.resultTotal = ResultTotal.FAIL_TRIES
-    data.resultText = Content.FAIL
-    data.textButton = TextButtons.FAIL
+    data = FailTries
   } else if (state.time === 0) {
-    data.title = Titles.FAIL_TIME
-    data.resultTotal = ResultTotal.FAIL_TIME
-    data.resultText = Content.FAIL
-    data.textButton = TextButtons.FAIL
+    data = FailTime
   } else {
-    data.title = Titles.RESULT_SUCCESS
-    data.resultTotal = ResultTotal.RESULT_SUCCESS
-    data.resultText = Content.RESULT_SUCCESS
-    data.textButton = TextButtons.RESULT_SUCCESS
+    data = ResultSuccess
   }
 
   return data;

@@ -63,10 +63,12 @@ export default class GameGenreView extends AbstractView {
           audioTracks[i].pause();
           button.classList.remove(`track__button--pause`);
         } else {
-          for (let j = 0; j < playButtons.length; j++) {
-            playButtons[j].classList.remove(`track__button--pause`);
-            audioTracks[j].pause();
-          }
+          playButtons.forEach((it) => {
+            it.classList.remove(`track__button--pause`);
+          });
+          audioTracks.forEach((it) => {
+            it.pause();
+          });
           button.classList.add(`track__button--pause`);
           audioTracks[i].play();
         }
