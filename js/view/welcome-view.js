@@ -1,8 +1,12 @@
-import {renderElement} from '../utils.js';
-import {changeLevel} from '../game-control.js';
+import AbstractView from './abstract-view';
 
+export default class WelcomeView extends AbstractView {
+  constructor() {
+    super();
+  }
 
-const welcomeScreenTemplate = () => `
+  get template() {
+    return `
   <section class="welcome">
     <div class="welcome__logo"><img src="img/melody-logo.png" alt="Угадай мелодию" width="186" height="83"></div>
     <button class="welcome__button"><span class="visually-hidden">Начать игру</span></button>
@@ -13,20 +17,22 @@ const welcomeScreenTemplate = () => `
       <li>Можно допустить 3 ошибки.</li>
     </ul>
     <p class="welcome__text">Удачи!</p>
-  </section>
-  `;
+  </section>`;
+  }
 
-const initWelcomeScreen = () => {
-  const welcomeScreenElement = renderElement(welcomeScreenTemplate);
-  const welcomeButtonElement = welcomeScreenElement.querySelector(`.welcome__button`);
+  bind() {
+    const welcomeButtonElement = this.element.querySelector(`.welcome__button`);
 
-  const onWelcomeButtonClick = () => {
-    changeLevel();
-  };
+    const onWelcomeButtonClick = (evt) => {
+      evt.stopPropagation();
+      evt.preventDefault();
 
-  welcomeButtonElement.addEventListener(`click`, onWelcomeButtonClick);
+      this.onClick();
+    };
 
-  return welcomeScreenElement;
-};
+    welcomeButtonElement.addEventListener(`click`, onWelcomeButtonClick);
+  }
 
-export default initWelcomeScreen();
+  onClick() {}
+
+}

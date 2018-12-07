@@ -1,34 +1,28 @@
-import {showScreen} from './utils.js';
-import {gameLevels} from './game-data.js';
-import {initialState} from './game-data.js';
-import initFailTriesScreen from './templates/fail-tries.js'
-import initFailTimeScreen from './templates/fail-tries.js'
-import initGameGenreScreen from './templates/game-genre.js'
-import initGameArtistScreen from './templates/game-artist.js'
-import initResultSuccessScreen from './templates/result-success.js'
-
-
-const initialInfo = Object.freeze({
-  NOTES: 3,
-  TIME: 300,
-  SCORE: 0,
-});
+import {GameInfo} from './utils';
+import {gameLevels, initialState, statistics} from './data';
+import gameScreen from './screen/game-screen'
+import result from './screen/result'
+import {showScreen} from './utils';
 
 const countRules = {
   RIGHT: 1,
   WRONG: -2,
-  FAST_RIGHT: 2
+  FAST_RIGHT: 2,
+  FAST_TIME: 30
 };
 
-const MAX_LEVEL = 10;
-const FAST_TIME = 30;
-const FAIL_RESULT = -1;
+export let gameStates = {};
 
-export const countScore = (answers) => {
-  let score = initialInfo.SCORE;
+export const startGame = () => {
+  gameStates = Object.assign({}, initialState);
+  changeLevel(gameStates);
+}
+
+export const countScore = (answers, notesLast) => {
+  let score = GameInfo.START_SCORE;
 
   for (let answer of answers) {
-    if (answer.option && answer.time < FAST_TIME) {
+    if (answer.option && answer.time < countRules.FAST_TIME) {
       score += countRules.FAST_RIGHT;
     } else if (answer.option !== true) {
       score += countRules.WRONG;
@@ -36,74 +30,65 @@ export const countScore = (answers) => {
       score += countRules.RIGHT;
     }
   }
-  return score
+   if (answers.length < GameInfo.MAX_LEVEL) {
+    return GameInfo.FAIL_RESULT;
+  } else if (notesLast === GameInfo.MAX_NOTES) {
+    return GameInfo.FAIL_RESULT;
+  } else {
+    return score
+  }
 };
 
-export const countTime = (answers) => {
-  let time = initialInfo.TIME;
-  for (let answer of answers) {
-    time -= answer.time
-  }
-  if (time <= 0) {
-    return FAIL_RESULT
-  }
-  return time
-};
-
-export const getResults = (statistics) => {
-  const gameScore = countScore(userAnswersInfo);
-  statistics.push(gameScore);
-  statistics.sort((a,b) => b - a);
-  const place = statistics.indexOf(gameScore) + 1;
-  const allPlaces = statistics.length;
+export const getStatResults = (stat, score) => {
+  stat.push(score);
+  stat.sort((a,b) => b - a);
+  const place = stat.indexOf(score) + 1;
+  const allPlaces = stat.length;
   const successRate = Math.round((allPlaces - place) / allPlaces * 100);
 
   return `Вы заняли ${place} место из ${allPlaces} игроков. Это лучше, чем у ${successRate}% игроков`
 };
 
-
-export const gameStates = Object.assign({}, initialState);
-export const statistics = [1, 4, 3, 12, 6];
-export const userAnswersInfo = [];
-
-export const goNextLevel = (state) => {
-  const currentLevel = state.level + 1;
-  state.level = currentLevel;
-  return currentLevel;
-};
-
-export const resetLevel = (state) => {
-  state.level = initialState.level;
-  state.notes = initialState.notes;
-  state.time = initialState.time;
-  return state
-};
-
-export const changeLevel = () => {
-  if (gameStates.notes < 3 && gameStates.level < 9) {
-    let gameEl = gameLevels[gameStates.level];
-    let screen;
-    if (gameEl.type === `game--genre`) {
-      screen = initGameGenreScreen(gameEl)
-    } else if (gameEl.type === `game--artist`) {
-      screen = initGameArtistScreen(gameEl)
-    }
-    showScreen(screen);
-    goNextLevel(gameStates);
+export const changeLevel = (state) => {
+  if (state.notes < GameInfo.MAX_NOTES && state.level < GameInfo.MAX_LEVEL) {
+    gameScreen()
+    state.level += 1
   } else {
-    showResults()
+    showScreen(result(state).element);
   }
 };
 
+export const showResult = (state) => {
+  const ResultSuccess = {
+    title: `Вы настоящий меломан!`,
+    textButton: `Сыграть ещё раз`,
+    resultTotal: `За 3 минуты и 25 секунд вы набрали ${countScore(state.userAnswersInfo, state.notes)} баллов (8 быстрых), совершив ${state.notes} ошибки`,
+    resultText: getStatResults(statistics, countScore(state.userAnswersInfo)),
+  };
 
-export const showResults = () => {
-  if (gameStates.notes >= 2) {
-    showScreen(initFailTriesScreen());
-    resetLevel(gameStates);
-  } else if (gameStates.time === 0) {
-    showScreen(initFailTimeScreen());
-    resetLevel(gameStates);
+  const FailTries = {
+    title: `Какая жалость!`,
+    textButton: `Попробовать ещё раз`,
+    resultTotal: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`,
+    resultText: ``
+  };
+
+  const FailTime = {
+    title: `Увы и ах!`,
+    textButton: `Попробовать ещё раз`,
+    resultTotal: `Время вышло! Вы не успели отгадать все мелодии`,
+    resultText: ``
+  };
+
+  let data = {}
+
+  if(state.notes >= GameInfo.MAX_NOTES) {
+    data = FailTries
+  } else if (state.time === 0) {
+    data = FailTime
   } else {
-    showScreen(initResultSuccessScreen(gameStates));
+    data = ResultSuccess
   }
-};
+
+  return data;
+}
