@@ -1,19 +1,24 @@
 import AbstractView from './abstract-view';
+import {GAME_LEVELS} from '../data';
+
 
 export default class GameAtistView extends AbstractView {
-  constructor(game) {
+  constructor(state) {
     super();
-    this.game = game;
+    this.state = state;
+    this.level = GAME_LEVELS[state.level];
   }
 
   get template() {
     return `
+  <h2 class="game__title">${this.level.title}</h2>
+
   <div class="game__track">
         <button class="track__button track__button--play" type="button"></button>
-        <audio src="${this.game.question.src}"></audio>
+        <audio src="${this.level.question.src}"></audio>
       </div>
       <form class="game__artist">
-        ${this.game.answers.map((it) =>`
+        ${this.level.answers.map((it) =>`
         <div class="artist">
           <input class="artist__input visually-hidden" type="radio" name="answer" value="${it.artist}" id="answer-${it.src}">
           <label class="artist__name" for="answer-${it.src}">
@@ -40,12 +45,14 @@ export default class GameAtistView extends AbstractView {
 
   }
 
+  initSetting() {
+    this.element.querySelector(`audio`).setAttribute(`autoplay`, true);
+    this.element.querySelector(`.track__button`).classList.add(`track__button--pause`);
+  }
+
   playAudio() {
     const trackArtistBtnElement = this.element.querySelector(`.track__button`);
     const audioTrackArtistElement = this.element.querySelector(`audio`);
-
-    audioTrackArtistElement.setAttribute(`autoplay`, true);
-    trackArtistBtnElement.classList.add(`track__button--pause`);
 
     const checkAudio = () => {
       if (trackArtistBtnElement.classList.contains(`track__button--pause`)) {

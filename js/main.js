@@ -1,4 +1,3 @@
-import welcomeScreen from './screen/welcome'
+import Application from './application'
 
-
-welcomeScreen()
+Application.showWelcome();

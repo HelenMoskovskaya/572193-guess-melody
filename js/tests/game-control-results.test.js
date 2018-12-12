@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {getStatResults} from '../game-control.js';
+import {getStatResults} from '../utils';
 
 
 describe(`Get results`, () => {

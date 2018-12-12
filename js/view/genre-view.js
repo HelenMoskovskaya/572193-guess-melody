@@ -1,15 +1,20 @@
 import AbstractView from './abstract-view';
+import {GAME_LEVELS} from '../data';
+
 
 export default class GameGenreView extends AbstractView {
-  constructor(game) {
+  constructor(state) {
     super();
-    this.game = game;
+    this.state = state;
+    this.level = GAME_LEVELS[state.level];
   }
 
   get template() {
     return `
+  <h2 class="game__title">${this.level.title}</h2>
+
   <form class="game__tracks">
-    ${this.game.questions.map((it) => `
+    ${this.level.questions.map((it) => `
       <div class="track">
         <button class="track__button track__button--play" type="button"></button>
         <div class="track__status">

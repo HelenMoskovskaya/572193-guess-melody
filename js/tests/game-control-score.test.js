@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import {countScore} from '../game-control';
+import {countScore} from '../utils';
 
 
 describe(`Count score`, () => {
