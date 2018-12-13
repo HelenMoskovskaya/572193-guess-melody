@@ -1,6 +1,6 @@
 import trackList from './track-list.js';
 
-export const initialState = Object.freeze({
+export const INITIAL_STATE = Object.freeze({
   level: 0,
   notes: 0,
   time: 300,
@@ -9,7 +9,7 @@ export const initialState = Object.freeze({
 
 export const statistics = [1, 4, 3, 12, 6];
 
-export const gameLevels = [
+export const GAME_LEVELS = [
   {
     type: `game--genre`,
     title: `Выберите ${trackList[4].genre} треки`,

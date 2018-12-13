@@ -1,5 +1,16 @@
 import AbstractView from './abstract-view';
 
+
+const getMinutes = (time) => {
+  const result = Math.floor(time / 60);
+  return result < 10 ? `0` + result : result;
+};
+
+const getSeconds = (time)=> {
+  const result = Math.floor(time % 60);
+  return result < 10 ? `0` + result : result;
+};
+
 export default class HeaderView extends AbstractView {
   constructor(state) {
     super();
@@ -20,9 +31,9 @@ export default class HeaderView extends AbstractView {
       </svg>
 
       <div class="timer__value" xmlns="http://www.w3.org/1999/xhtml">
-        <span class="timer__mins">05</span>
+        <span class="timer__mins">${getMinutes(this.state.time)}</span>
         <span class="timer__dots">:</span>
-        <span class="timer__secs">00</span>
+        <span class="timer__secs">${getSeconds(this.state.time)}</span>
       </div>
 
       <div class="game__mistakes">

@@ -1,21 +1,20 @@
 import AbstractView from './abstract-view';
-import {gameStates, showResult} from '../game-control';
-
+import {showResult} from '../utils';
 
 export default class ResultView extends AbstractView {
-  constructor(game) {
+  constructor(state) {
     super();
-    this.game = game;
+    this.state = state;
   }
 
   get template() {
     return `
   <section class="result">
     <div class="result__logo"><img src="img/melody-logo.png" alt="Угадай мелодию" width="186" height="83"></div>
-    <h2 class="result__title">${showResult(gameStates).title}</h2>
-    <p class="result__total">${showResult(gameStates).resultTotal}</p>
-    <p class="result__text">${showResult(gameStates).resultText}</p>
-    <button class="result__replay" type="button">${showResult(gameStates).textButton}</button>
+    <h2 class="result__title">${showResult(this.state).title}</h2>
+    <p class="result__total">${showResult(this.state).resultTotal}</p>
+    <p class="result__text">${showResult(this.state).resultText}</p>
+    <button class="result__replay" type="button">${showResult(this.state).textButton}</button>
    </section>`;
   }
 
