@@ -10,9 +10,9 @@ export default class GameScreen {
   constructor(model) {
     this.model = model;
 
-    this.screen = new GameScreenView(this.model.state);
+    this.screen = new GameScreenView(this.model.currentLevel);
     this.blockHeader = new HeaderView(this.model.state);
-    this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.state) : new GameAtistView(this.model.state);
+    this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
     this.screen.element.querySelector(`.game__screen`).appendChild(this.blockContent.element);
@@ -53,14 +53,14 @@ export default class GameScreen {
     this.screen.element.replaceChild(header.element, this.blockHeader.element);
     this.blockHeader = header;
     this.blockHeader.onClick = () => {
-      Application.showWelcome();
+      Application.start();
       this.stopGame();
     };
     this.timeOut();
   }
 
   updateContent() {
-    const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.state) : new GameAtistView(this.model.state);
+    const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
     this.screen.element.querySelector(`.game__screen`).replaceChild(contentGame.element, this.blockContent.element);
     this.blockContent = contentGame;
     this._initGame();
@@ -77,26 +77,28 @@ export default class GameScreen {
   }
 
   timeOut() {
+    const timer = this.element.querySelector(`.timer__value`);
     if (this.model.state.time === 0) {
       Application.showResult(this.model.state);
       this.stopGame();
     }
+    if (this.model.state.time < 30) {
+      timer.style.color = `red`;
+    }
   }
+
 
   _getAnswer(cssClass, correctAnswer) {
     const inputElement = this.screen.element.querySelectorAll(cssClass);
-    const answerEls = [...inputElement];
+    const userAnswers = [...inputElement].filter((it) => it.checked);
 
-    const userAnswers = answerEls.filter((it) => it.checked);
-    const result = userAnswers.every((it) => {
-      return it.value === correctAnswer;
-    });
-
+    const result = userAnswers.every((it) => it.value === correctAnswer);
     this.model.addAnswer(result);
 
     if (result !== true) {
       this.model.changeNotes();
     }
+
     this.goToNextLevel();
   }
 
@@ -105,7 +107,7 @@ export default class GameScreen {
   }
 
   answerArtist() {
-    this._getAnswer(`.artist__input`, this.model.getCorrectAnswerArtist());
+    this._getAnswer(`.artist__input`, `true`);
   }
 
 }

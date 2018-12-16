@@ -1,4 +1,4 @@
- import {statistics} from './data'
+ import {statistics, INITIAL_STATE} from './data'
 
 
  export const renderElement = (template) => {
@@ -66,7 +66,7 @@ export const getStatResults = (stat, score) => {
 };
 
 export const showResult = (state) => {
-  const resultTime = state.time;
+  const resultTime = INITIAL_STATE.time - state.time;
   const minutes = Math.floor(resultTime / 60);
   const seconds = resultTime % 60;
 
