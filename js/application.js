@@ -1,21 +1,16 @@
-import {showScreen} from './utils';
+import {showScreen, GameInfo} from './utils';
 import WelcomeScreen from './presenter/welcome-presenter';
 import GameScreen from './presenter/game-screen-presenter';
 import GameModel from './model/game-model';
-import ResultScreen from './presenter/result-presenter';
+import ResultSuccessScreen from './presenter/result-success-presenter';
 import LoaderScreen from './presenter/loader-presenter';
 import ErrorScreen from './presenter/error-presenter';
-
-
-const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
-  }
-};
+import Loader from './loader';
+import {INITIAL_STATE} from './data';
+import ResultFailScreen from './presenter/result-fail-presenter';
 
 let gameData;
+let allStatisticsData;
 
 export default class Application {
   static start() {
@@ -23,11 +18,10 @@ export default class Application {
     showScreen(loaderScreen.element);
     loaderScreen.initSetting()
     loaderScreen.start()
-    window.fetch(`https://es.dump.academy/guess-melody/questions`).
-      then(checkStatus).
-      then((response) => response.json()).
+    Loader.loadData().
       then((data) => gameData = data).
-      then((response) => Application.showWelcome()).
+      then((gameData) => Application.showWelcome()).
+
       catch(Application.showError).
       then(() => loaderScreen.stop());
   }
@@ -37,6 +31,8 @@ export default class Application {
     showScreen(welcomeScreen.element);
 
     console.log(gameData)
+    console.log(gameData.length)
+
     console.log(gameData[0].genre)
   }
 
@@ -48,11 +44,37 @@ export default class Application {
     gameScreen.startGame();
   }
 
-  static showResult(state) {
-    const resultScreen = new ResultScreen(state);
-    showScreen(resultScreen.element);
+  static showGameReplay() {
+
+    Loader.loadData().
+      then((data) => gameData = data).
+      then((gameData) => Application.showGame()).
+
+      catch(Application.showError)
+      //then(() => loaderScreen.stop());
   }
 
+  static showResult(state) {
+    const userData = {
+      time: INITIAL_STATE.time - state.time,
+      answers: state.userAnswersInfo.map((it) => it.time),
+    }
+
+    if(state.notes < GameInfo.MAX_NOTES && state.time > 0) {
+      Loader.saveResults(userData).
+        then(() => Loader.loadResults()).
+        then((data) => allStatisticsData = data).
+        then(() => console.log(allStatisticsData)).
+        then(() => {
+          const resultSuccessScreen = new ResultSuccessScreen(state, allStatisticsData);
+          showScreen(resultSuccessScreen.element)
+        });
+    } else {
+        const resultFailScreen = new ResultFailScreen(state);
+        showScreen(resultFailScreen.element)
+    }
+
+  }
   static showError(error) {
     const errorScreen = new ErrorScreen(error);
     showScreen(errorScreen.element);

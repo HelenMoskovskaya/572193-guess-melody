@@ -1,5 +1,7 @@
 import AbstractView from './abstract-view';
 
+const DEBUG = true;
+const DEBUG_STYLE = `style="color: red;"`;
 
 export default class GameAtistView extends AbstractView {
   constructor(level) {
@@ -19,7 +21,7 @@ export default class GameAtistView extends AbstractView {
         ${this.level.answers.map((it, i) =>`
         <div class="artist">
           <input class="artist__input visually-hidden" type="radio" name="answer" value="${it.isCorrect}" id="answer-${i}">
-          <label class="artist__name" for="answer-${i}">
+          <label class="artist__name" ${DEBUG && it.isCorrect ? DEBUG_STYLE : ``} for="answer-${i}">
             <img class="artist__picture" src="${it.image.url}" alt="${it.title}">
             ${it.title}
           </label>

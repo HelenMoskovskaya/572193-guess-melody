@@ -1,4 +1,3 @@
-
 import {INITIAL_STATE} from '../data';
 import {clearArray, GameInfo} from '../utils';
 
@@ -22,13 +21,21 @@ export default class GameModel {
   }
 
   getCorrectAnswerGenre() {
+    return this.data[this._state.level].answers.filter((it) => it.genre === this.data[this._state.level].genre);
+  }
+
+  getCorrectGenre() {
     return this.data[this._state.level].genre;
   }
 
-  addAnswer(result) {
+  addAnswer(result, Answertime) {
+    if (result !== true) {
+      Answertime = GameInfo.FAIL_RESULT;
+    }
+
     this._state.userAnswersInfo.push({
       option: result,
-      time: INITIAL_STATE.time - this._state.time
+      time: Answertime
     });
   }
 

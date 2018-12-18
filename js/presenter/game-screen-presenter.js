@@ -15,10 +15,9 @@ export default class GameScreen {
     this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
-    this.screen.element.querySelector(`.game__screen`).appendChild(this.blockContent.element);
-
+    this.gameContentElement = this.screen.element.querySelector(`.game__screen`);
+    this.gameContentElement.appendChild(this.blockContent.element);
     this._timer = null;
-
   }
 
   get element() {
@@ -31,10 +30,12 @@ export default class GameScreen {
     this._timer = setTimeout(() => this._tick(), ONE_SECOND);
   }
 
+
   _initGame() {
+    this.startTime = this.model.state.time;
     this.blockContent.playAudio();
     this.blockContent.initSetting();
-    this.blockContent.onAnswer = () => (this.model.isGameGenre()) ? this.answerGenre() : this.answerArtist();
+    this.blockContent.onAnswer = () => (this.model.isGameGenre()) ? this._getAnswerGenre() : this._getAnswerArtist();
   }
 
   startGame() {
@@ -45,7 +46,7 @@ export default class GameScreen {
   }
 
   stopGame() {
-    clearInterval(this._timer);
+    clearTimeout(this._timer);
   }
 
   updateHeader() {
@@ -56,14 +57,16 @@ export default class GameScreen {
       Application.start();
       this.stopGame();
     };
+
     this.timeOut();
   }
 
   updateContent() {
     const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
-    this.screen.element.querySelector(`.game__screen`).replaceChild(contentGame.element, this.blockContent.element);
+    this.gameContentElement.replaceChild(contentGame.element, this.blockContent.element);
     this.blockContent = contentGame;
     this._initGame();
+
   }
 
   goToNextLevel() {
@@ -77,37 +80,45 @@ export default class GameScreen {
   }
 
   timeOut() {
-    const timer = this.element.querySelector(`.timer__value`);
+    const timerElement = this.element.querySelector(`.timer__value`);
     if (this.model.state.time === 0) {
       Application.showResult(this.model.state);
       this.stopGame();
     }
     if (this.model.state.time < 30) {
-      timer.style.color = `red`;
+      timerElement.style.color = `red`;
+      timerElement.style.animation = `blink 1000ms steps(1, end) infinite`;
     }
   }
 
-
-  _getAnswer(cssClass, correctAnswer) {
-    const inputElement = this.screen.element.querySelectorAll(cssClass);
-    const userAnswers = [...inputElement].filter((it) => it.checked);
-
-    const result = userAnswers.every((it) => it.value === correctAnswer);
-    this.model.addAnswer(result);
+  _getAnswer(result) {
+    const time = this.startTime - this.model.state.time;
 
     if (result !== true) {
       this.model.changeNotes();
     }
-
+    this.model.addAnswer(result, time);
     this.goToNextLevel();
   }
 
-  answerGenre() {
-    this._getAnswer(`.game__input`, this.model.getCorrectAnswerGenre());
+  _getAnswerGenre() {
+    const inputElement = this.screen.element.querySelectorAll(`.game__input`);
+    const userAnswers = [...inputElement].filter((it) => it.checked);
+
+    const correctMultiAnswers = this.model.getCorrectAnswerGenre().length === userAnswers.length;
+    const result = userAnswers.every((it) => it.value === this.model.getCorrectGenre() && correctMultiAnswers);
+
+    this._getAnswer(result);
   }
 
-  answerArtist() {
-    this._getAnswer(`.artist__input`, `true`);
+  _getAnswerArtist() {
+    const inputElement = this.screen.element.querySelectorAll(`.artist__input`);
+    const userAnswers = [...inputElement].filter((it) => it.checked);
+
+    const result = userAnswers.every((it) => it.value === `true`);
+
+    this._getAnswer(result);
   }
+
 
 }

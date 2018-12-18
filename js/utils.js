@@ -26,6 +26,7 @@ export const GameInfo = {
 };
 
 export const ONE_SECOND = 1000;
+export const SECONDS_IN_MINUTES = 60;
 
 const countRules = {
   RIGHT: 1,
@@ -34,96 +35,89 @@ const countRules = {
   FAST_TIME: 30
 };
 
-export const countScore = (answers, notesLast) => {
+export const countScore = (item) => {
   let score = GameInfo.START_SCORE;
 
-  for (let answer of answers) {
-    if (answer.option && answer.time < countRules.FAST_TIME) {
-      score += countRules.FAST_RIGHT;
-    } else if (answer.option !== true) {
-      score += countRules.WRONG;
-    } else {
-      score += countRules.RIGHT;
-    }
-  }
-   if (answers.length < GameInfo.MAX_LEVEL) {
-    return GameInfo.FAIL_RESULT;
-  } else if (notesLast === GameInfo.MAX_NOTES) {
-    return GameInfo.FAIL_RESULT;
+  if(item < 0) {
+    score += countRules.WRONG;
+  } else if (item < countRules.FAST_TIME) {
+    score += countRules.FAST_RIGHT;
   } else {
-    return score
+    score += countRules.RIGHT
   }
+
+  return score
 };
 
-export const getStatResults = (stat, score) => {
-  stat.push(score);
-  stat.sort((a,b) => b - a);
-  const place = stat.indexOf(score) + 1;
-  const allPlaces = stat.length;
+
+export const getUserScore = (arr) => {
+  const userAnswers = arr.map((it) => it.time);
+  const userTime = userAnswers.map((it) => it = countScore(it));
+  const userScore = userTime.reduce((sum, current) => {
+    return sum + current}, 0);
+
+  return userScore
+}
+
+export const getStatResults = (data) => {
+  const allStatUsers = data;
+  const lastData = allStatUsers[allStatUsers.length - 1];
+
+  allStatUsers.forEach((it) => {
+    it.score = it.answers.map((it) => it = countScore(it));
+    it.score = it.score.reduce((sum, current) => sum + current);
+  });
+
+  const getSort = (a,b) => {
+    if (a.score === b.score) {
+      return (a.time - b.time)
+    } else {
+      return (b.score - a.score)
+    }
+  }
+
+  const statPoints = allStatUsers.sort(getSort);
+
+  const place = statPoints.indexOf(lastData) + 1;
+  const allPlaces = statPoints.length;
+  console.log(statPoints)
   const successRate = Math.round((allPlaces - place) / allPlaces * 100);
 
   return `Вы заняли ${place} место из ${allPlaces} игроков. Это лучше, чем у ${successRate}% игроков`
 };
 
-export const showResult = (state) => {
-  const resultTime = INITIAL_STATE.time - state.time;
-  const minutes = Math.floor(resultTime / 60);
-  const seconds = resultTime % 60;
 
-  const fastAnswers = state.userAnswersInfo.filter((it) => it.option === true && it.time < 30);
-  const quantityFast = fastAnswers.length;
-
-  const ResultSuccess = {
-    title: `Вы настоящий меломан!`,
-    textButton: `Сыграть ещё раз`,
-    resultTotal: `За ${minutes} ${formatWord(minutes, 'minutes')} и ${seconds} ${formatWord(seconds, 'seconds')} вы набрали ${countScore(state.userAnswersInfo, state.notes)} ${formatWord(countScore(state.userAnswersInfo, state.notes), 'points')} (${quantityFast} ${formatWord(quantityFast, 'fastAnswers')}), совершив ${state.notes} ${formatWord(state.notes, 'mistakes')}`,
-    resultText: getStatResults(statistics, countScore(state.userAnswersInfo)),
-  };
-
+export const showFailResult = (state) => {
   const FailTries = {
     title: `Какая жалость!`,
-    textButton: `Попробовать ещё раз`,
     resultTotal: `У вас закончились все попытки. Ничего, повезёт в следующий раз!`,
-    resultText: ``
   };
 
   const FailTime = {
     title: `Увы и ах!`,
-    textButton: `Попробовать ещё раз`,
     resultTotal: `Время вышло! Вы не успели отгадать все мелодии`,
-    resultText: ``
   };
 
-  let data = {}
+  let content = {}
 
   if(state.notes >= GameInfo.MAX_NOTES) {
-    data = FailTries
+    content = FailTries
   } else if (state.time <= 0) {
-    data = FailTime
-  } else {
-    data = ResultSuccess
+    content = FailTime
   }
-
-  return data;
+  return content;
 }
 
-const Vocabulary = {
-  minutes: [`минуту`, `минуты`, `минут`],
-  seconds: [`секунду`, `секунды`, `секунд`],
-  points: [`балл`, `балла`, `баллов`],
-  fastAnswers: [`быстрый`, `быстрых`, `быстрых`],
-  mistakes: [`ошибку`, `ошибки`, `ошибок`],
+export const Dictionary = {
+  MINUTES: [`минуту`, `минуты`, `минут`],
+  SECONDS: [`секунду`, `секунды`, `секунд`],
+  POINTS: [`балл`, `балла`, `баллов`],
+  FAST_ANSWERS: [`быстрый`, `быстрых`, `быстрых`],
+  MISTAKES: [`ошибку`, `ошибки`, `ошибок`],
   };
 
-  export const formatWord = (number, item) => {
-    const words = Vocabulary[item];
-    if ((number === 1) || (number > 20 && number % 10 === 1)) {
-      return words[0];
-    } else if ((number >= 2 && number <= 4) || (number > 20 && number % 10 >= 2 && number % 10 <= 4)) {
-      return words[1];
-    } else {
-      return words[2];
-  }
-  };
-
+ export const formatWords = (n, numeralArr) => {
+  const key = [2, 0, 1, 1, 1, 2];
+  return numeralArr[(n % 100 > 4 && n % 100 < 20) ? 2 : key[(n % 10 < 5) ? n % 10 : 5]];
+};
 

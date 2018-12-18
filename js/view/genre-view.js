@@ -1,5 +1,7 @@
 import AbstractView from './abstract-view';
 
+const DEBUG = true;
+const DEBUG_STYLE = `style="background-color: yellow;"`;
 
 export default class GameGenreView extends AbstractView {
   constructor(level) {
@@ -20,7 +22,7 @@ export default class GameGenreView extends AbstractView {
         </div>
         <div class="game__answer">
           <input class="game__input visually-hidden" type="checkbox" name="answer" value="${it.genre}" id="answer-${it.src}">
-          <label class="game__check" for="answer-${it.src}">Отметить</label>
+          <label class="game__check" ${DEBUG && it.genre === this.level.genre ? DEBUG_STYLE : ``} for="answer-${it.src}">Отметить</label>
         </div>
       </div>`).join(``)}
     <button class="game__submit button" type="submit">Ответить</button>
@@ -42,7 +44,6 @@ export default class GameGenreView extends AbstractView {
 
   initSetting() {
     this.element.querySelector(`.game__submit`).setAttribute(`disabled`, true);
-
     this.element.querySelectorAll(`.game__input`).forEach((element) => {
       element.addEventListener(`click`, () => {
         this.element.querySelector(`.game__submit`).removeAttribute(`disabled`);
