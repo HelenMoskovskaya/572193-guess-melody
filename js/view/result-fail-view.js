@@ -1,21 +1,22 @@
 import AbstractView from './abstract-view';
-import {showResult} from '../utils';
+import {showFailResult} from '../utils';
 
-export default class ResultView extends AbstractView {
+
+export default class ResultFailView extends AbstractView {
   constructor(state) {
     super();
     this.state = state;
+
   }
 
   get template() {
     return `
   <section class="result">
     <div class="result__logo"><img src="img/melody-logo.png" alt="Угадай мелодию" width="186" height="83"></div>
-    <h2 class="result__title">${showResult(this.state).title}</h2>
-    <p class="result__total">${showResult(this.state).resultTotal}</p>
-    <p class="result__text">${showResult(this.state).resultText}</p>
-    <button class="result__replay" type="button">${showResult(this.state).textButton}</button>
-   </section>`;
+    <h2 class="result__title">${showFailResult(this.state).title}</h2>
+    <p class="result__total result__total--fail">${showFailResult(this.state).resultTotal}</p>
+    <button class="result__replay" type="button">Попробовать ещё раз</button>
+  </section>`;
   }
 
   bind() {
@@ -34,6 +35,5 @@ export default class ResultView extends AbstractView {
   onBack() {
 
   }
-
 
 }

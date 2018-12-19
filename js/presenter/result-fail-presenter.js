@@ -1,11 +1,11 @@
-import ResultView from '../view/result-view';
+import ResultFailView from '../view/result-fail-view';
 import Application from '../application';
 
 
-export default class ResultScreen {
+export default class ResultFailScreen {
   constructor(state) {
     this.state = state;
-    this.screen = new ResultView(this.state);
+    this.screen = new ResultFailView(this.state);
     this.bind();
   }
 

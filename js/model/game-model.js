@@ -1,11 +1,10 @@
-import {INITIAL_STATE, GAME_LEVELS} from '../data';
+import {INITIAL_STATE} from '../data';
 import {clearArray, GameInfo} from '../utils';
 
 
-const getTypeGame = (state) => GAME_LEVELS[state.level].type;
-
 export default class GameModel {
-  constructor() {
+  constructor(data) {
+    this.data = data;
     this.restart();
   }
 
@@ -13,23 +12,28 @@ export default class GameModel {
     return this._state;
   }
 
+  get currentLevel() {
+    return this.data[this._state.level];
+  }
+
   isGameGenre() {
-    return getTypeGame(this._state) === `game--genre`;
+    return this.currentLevel.type === `genre`;
   }
 
   getCorrectAnswerGenre() {
-    return GAME_LEVELS[this._state.level].answers;
+    return this.data[this._state.level].answers.filter((it) => it.genre === this.data[this._state.level].genre);
   }
 
-  getCorrectAnswerArtist() {
-    return GAME_LEVELS[this._state.level].question.artist;
+  getCorrectGenre() {
+    return this.data[this._state.level].genre;
   }
 
-  addAnswer(result) {
-    this._state.userAnswersInfo.push({
-      option: result,
-      time: INITIAL_STATE.time - this._state.time
-    });
+  addAnswer(result, Answertime) {
+    if (result !== true) {
+      Answertime = GameInfo.FAIL_RESULT;
+    }
+
+    this._state.userAnswersInfo.push(Answertime);
   }
 
   tick() {
@@ -49,7 +53,7 @@ export default class GameModel {
   }
 
   restart() {
-    this._state = INITIAL_STATE;
+    this._state = Object.assign({}, INITIAL_STATE);
     clearArray(this._state.userAnswersInfo);
   }
 }

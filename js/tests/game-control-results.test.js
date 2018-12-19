@@ -1,4 +1,4 @@
-import {assert} from 'chai';
+/*  import {assert} from 'chai';
 import {getStatResults} from '../utils';
 
 
@@ -15,3 +15,4 @@ describe(`Get results`, () => {
   });
 });
 
+*/

@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view';
+import {INITIAL_STATE} from '../data';
 
 
 const getMinutes = (time) => {
@@ -17,6 +18,18 @@ export default class HeaderView extends AbstractView {
     this.state = state;
   }
 
+  _getDash() {
+    const RADIUS = 370;
+    const CIRCLE_LENGTH = Math.round(2 * Math.PI * RADIUS);
+    const time = INITIAL_STATE.time - this.state.time;
+
+    const dash = {};
+    dash.stroke = CIRCLE_LENGTH;
+    dash.offset = Math.round(CIRCLE_LENGTH / INITIAL_STATE.time * time);
+
+    return dash;
+  }
+
   get template() {
     return `
   <header class="game__header">
@@ -26,7 +39,7 @@ export default class HeaderView extends AbstractView {
       </a>
 
       <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
-        <circle class="timer__line" cx="390" cy="390" r="370"
+        <circle class="timer__line" cx="390" cy="390" r="370" stroke-dasharray="${this._getDash().stroke}" stroke-dashoffset="${this._getDash().offset}"
                 style="filter: url(#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"/>
       </svg>
 
