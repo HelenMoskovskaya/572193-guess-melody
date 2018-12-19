@@ -8,8 +8,13 @@ export default class ErrorView extends AbstractView {
 
   get template() {
     return `
-  <div class="error">
-    <p>Произошла ошибка: ${this.error.message}</p>
-  </div>`;
+  <section class="modal" style="margin-left; -300px">
+    <h2 class="modal__title">Произошла ошибка!</h2>
+    <p class="modal__text">Статус: ${this.error} Пожалуйста, перезагрузите страницу.</p>
+  </section>`;
+  }
+
+  showModal() {
+    document.body.appendChild(this.element);
   }
 }

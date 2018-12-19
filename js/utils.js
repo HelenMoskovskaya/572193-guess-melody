@@ -1,7 +1,28 @@
  import {statistics, INITIAL_STATE} from './data'
 
 
- export const renderElement = (template) => {
+/*export const renderElement = (template) => {
+    const parser = new DOMParser();
+    const result = parser.parseFromString(template, `text/html`);
+
+    return result.body.firstElementChild;
+  }
+const appContainer = document.getElementById(`.main`);
+
+export const showScreen = (screen) => {
+  appContainer.replaceChild(screen.element, appContainer.children[0])
+}*/
+//export const renderElement = (template) => new DOMParser().parseFromString(template, `text/html`).body.firstElementChild;
+
+/*export const renderElement = (template) => {
+    const parser = new DOMParser();
+    const result = parser.parseFromString(template, `text/html`);
+
+    return result.body.firstElementChild;
+  }*/
+
+
+export const renderElement = (template) => {
   const element = document.createElement(`div`);
   element.innerHTML = template;
   return element;
@@ -35,6 +56,12 @@ const countRules = {
   FAST_TIME: 30
 };
 
+
+export const ContentButtonModal = {
+  YES: `Ок`,
+  NO: `Отмена`
+}
+
 export const countScore = (item) => {
   let score = GameInfo.START_SCORE;
 
@@ -51,7 +78,7 @@ export const countScore = (item) => {
 
 
 export const getUserScore = (arr) => {
-  const userAnswers = arr.map((it) => it.time);
+  const userAnswers = arr.map((it) => it);
   const userTime = userAnswers.map((it) => it = countScore(it));
   const userScore = userTime.reduce((sum, current) => {
     return sum + current}, 0);
@@ -121,3 +148,11 @@ export const Dictionary = {
   return numeralArr[(n % 100 > 4 && n % 100 < 20) ? 2 : key[(n % 10 < 5) ? n % 10 : 5]];
 };
 
+export const initSettingGenre = (element, button, input) => {
+    element.querySelector(button).setAttribute(`disabled`, true);
+    element.querySelectorAll(input).forEach((it) => {
+      it.addEventListener(`click`, () => {
+        element.querySelector(button).removeAttribute(`disabled`);
+      });
+    });
+  }

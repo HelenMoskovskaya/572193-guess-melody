@@ -41,42 +41,4 @@ export default class GameGenreView extends AbstractView {
 
     gameGenreSubmitBtnElement.addEventListener(`click`, onGameSubmitClick);
   }
-
-  initSetting() {
-    this.element.querySelector(`.game__submit`).setAttribute(`disabled`, true);
-    this.element.querySelectorAll(`.game__input`).forEach((element) => {
-      element.addEventListener(`click`, () => {
-        this.element.querySelector(`.game__submit`).removeAttribute(`disabled`);
-      });
-    });
-  }
-
-  playAudio() {
-    const formGenreElement = this.element.querySelector(`.game__tracks`);
-    const trackGenreBtnElement = formGenreElement.querySelectorAll(`.track__button`);
-    const audioTrackGenreElement = formGenreElement.querySelectorAll(`audio`);
-    const playButtons = [...trackGenreBtnElement];
-    const audioTracks = [...audioTrackGenreElement];
-
-    audioTracks[0].setAttribute(`autoplay`, true);
-    playButtons[0].classList.add(`track__button--pause`);
-
-    playButtons.forEach((button, i) => {
-      button.addEventListener(`click`, () => {
-        if (button.classList.contains(`track__button--pause`)) {
-          audioTracks[i].pause();
-          button.classList.remove(`track__button--pause`);
-        } else {
-          playButtons.forEach((it) => {
-            it.classList.remove(`track__button--pause`);
-          });
-          audioTracks.forEach((it) => {
-            it.pause();
-          });
-          button.classList.add(`track__button--pause`);
-          audioTracks[i].play();
-        }
-      });
-    });
-  }
 }

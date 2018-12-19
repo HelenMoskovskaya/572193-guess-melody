@@ -1,6 +1,6 @@
 import AbstractView from './abstract-view';
 
-export default class LoaderView extends AbstractView {
+export default class PreloaderView extends AbstractView {
   constructor() {
     super();
   }
@@ -10,6 +10,6 @@ export default class LoaderView extends AbstractView {
   <div class="loader">
     <p class="loader__text">Загружается</p>
   </div>
-  <div class="loader__dots"></div>`;
+  <div class="loader__dots">&nbsp;</div>`;
   }
 }

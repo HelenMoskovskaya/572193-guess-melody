@@ -44,25 +44,4 @@ export default class GameAtistView extends AbstractView {
   onAnswer() {
 
   }
-
-  initSetting() {
-    this.element.querySelector(`audio`).setAttribute(`autoplay`, true);
-    this.element.querySelector(`.track__button`).classList.add(`track__button--pause`);
-  }
-
-  playAudio() {
-    const trackArtistBtnElement = this.element.querySelector(`.track__button`);
-    const audioTrackArtistElement = this.element.querySelector(`audio`);
-
-    const checkAudio = () => {
-      if (trackArtistBtnElement.classList.contains(`track__button--pause`)) {
-        trackArtistBtnElement.classList.remove(`track__button--pause`);
-        audioTrackArtistElement.pause();
-      } else {
-        trackArtistBtnElement.classList.add(`track__button--pause`);
-        audioTrackArtistElement.play();
-      }
-    };
-    trackArtistBtnElement.addEventListener(`click`, checkAudio);
-  }
 }

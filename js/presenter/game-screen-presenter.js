@@ -2,9 +2,9 @@ import GameScreenView from '../view/game-screen-view';
 import HeaderView from '../view/header-view';
 import GameGenreView from '../view/genre-view';
 import GameAtistView from '../view/artist-view';
-import {ONE_SECOND} from '../utils';
+import {ONE_SECOND, ContentButtonModal} from '../utils';
 import Application from '../application';
-
+import ModalConfirmView from '../view/modal-confirm-view';
 
 export default class GameScreen {
   constructor(model) {
@@ -13,11 +13,14 @@ export default class GameScreen {
     this.screen = new GameScreenView(this.model.currentLevel);
     this.blockHeader = new HeaderView(this.model.state);
     this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
+    this.modalConfirm = new ModalConfirmView();
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
     this.gameContentElement = this.screen.element.querySelector(`.game__screen`);
-    this.gameContentElement.appendChild(this.blockContent.element);
+    this.gameContentElement.insertAdjacentElement(`beforeend`, this.blockContent.element);
+
     this._timer = null;
+    this.bind();
   }
 
   get element() {
@@ -30,11 +33,73 @@ export default class GameScreen {
     this._timer = setTimeout(() => this._tick(), ONE_SECOND);
   }
 
+  _initSettingForGame() {
+    const buttonSubmitElement = this.blockContent.element.querySelector(`.game__submit`);
+    const gameInputElement = this.blockContent.element.querySelectorAll(`.game__input`);
+
+    if (this.model.isGameGenre() === true) {
+      buttonSubmitElement.setAttribute(`disabled`, true);
+      gameInputElement.forEach((it) => {
+        it.addEventListener(`click`, () => {
+          buttonSubmitElement.removeAttribute(`disabled`);
+        });
+      });
+    } else {
+      this.blockContent.element.querySelector(`audio`).setAttribute(`autoplay`, true);
+      this.blockContent.element.querySelector(`.track__button`).classList.add(`track__button--pause`);
+    }
+  }
+
+  _playAudio() {
+    if (this.model.isGameGenre() === true) {
+      const formGenreElement = this.blockContent.element.querySelector(`.game__tracks`);
+      const trackGenreBtnElement = formGenreElement.querySelectorAll(`.track__button`);
+      const audioTrackGenreElement = formGenreElement.querySelectorAll(`audio`);
+      const playButtons = [...trackGenreBtnElement];
+      const audioTracks = [...audioTrackGenreElement];
+
+      audioTracks[0].setAttribute(`autoplay`, true);
+      playButtons[0].classList.add(`track__button--pause`);
+
+      playButtons.forEach((button, i) => {
+        button.addEventListener(`click`, () => {
+          if (button.classList.contains(`track__button--pause`)) {
+            audioTracks[i].pause();
+            button.classList.remove(`track__button--pause`);
+          } else {
+            playButtons.forEach((it) => {
+              it.classList.remove(`track__button--pause`);
+            });
+            audioTracks.forEach((it) => {
+              it.pause();
+            });
+            button.classList.add(`track__button--pause`);
+            audioTracks[i].play();
+          }
+        });
+      });
+    } else {
+      const trackArtistBtnElement = this.blockContent.element.querySelector(`.track__button`);
+      const audioTrackArtistElement = this.blockContent.element.querySelector(`audio`);
+
+      const checkAudio = () => {
+        if (trackArtistBtnElement.classList.contains(`track__button--pause`)) {
+          trackArtistBtnElement.classList.remove(`track__button--pause`);
+          audioTrackArtistElement.pause();
+        } else {
+          trackArtistBtnElement.classList.add(`track__button--pause`);
+          audioTrackArtistElement.play();
+        }
+      };
+      trackArtistBtnElement.addEventListener(`click`, checkAudio);
+    }
+  }
+
 
   _initGame() {
     this.startTime = this.model.state.time;
-    this.blockContent.playAudio();
-    this.blockContent.initSetting();
+    this._initSettingForGame();
+    this._playAudio();
     this.blockContent.onAnswer = () => (this.model.isGameGenre()) ? this._getAnswerGenre() : this._getAnswerArtist();
   }
 
@@ -54,7 +119,8 @@ export default class GameScreen {
     this.screen.element.replaceChild(header.element, this.blockHeader.element);
     this.blockHeader = header;
     this.blockHeader.onClick = () => {
-      Application.start();
+      this.modalConfirm.showModalConfirm();
+      this._tick();
       this.stopGame();
     };
 
@@ -66,7 +132,6 @@ export default class GameScreen {
     this.gameContentElement.replaceChild(contentGame.element, this.blockContent.element);
     this.blockContent = contentGame;
     this._initGame();
-
   }
 
   goToNextLevel() {
@@ -121,4 +186,22 @@ export default class GameScreen {
   }
 
 
+  bind() {
+    this.modalConfirm.onConfirmClick = (evt) => {
+      const activeButton = evt.target;
+      switch (activeButton.textContent) {
+        case ContentButtonModal.YES:
+          Application.start();
+          this.modalConfirm.element.remove();
+          break;
+        case ContentButtonModal.NO:
+          this.modalConfirm.element.remove();
+          break;
+      }
+    };
+
+    this.modalConfirm.onCloseClick = () => {
+      this.modalConfirm.element.remove();
+    };
+  }
 }

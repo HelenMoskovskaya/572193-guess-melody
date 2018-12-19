@@ -33,10 +33,7 @@ export default class GameModel {
       Answertime = GameInfo.FAIL_RESULT;
     }
 
-    this._state.userAnswersInfo.push({
-      option: result,
-      time: Answertime
-    });
+    this._state.userAnswersInfo.push(Answertime);
   }
 
   tick() {

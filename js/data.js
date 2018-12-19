@@ -4,5 +4,3 @@ export const INITIAL_STATE = Object.freeze({
   time: 300,
   userAnswersInfo: []
 });
-
-export const statistics = [1, 4, 3, 12, 6];
