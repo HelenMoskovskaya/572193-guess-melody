@@ -19,7 +19,6 @@ export default class Application {
     welcomeScreen.startPreloader();
     Loader.loadData().
       then((data) => gameData = data).
-      then(() => console.log(gameData)).
       catch(Application.showError).
       then(() => welcomeScreen.stopPreloader());
   }
@@ -33,7 +32,6 @@ export default class Application {
   }
 
   static showGameReplay() {
-
     Loader.loadData().
       then((data) => gameData = data).
       then((gameData) => Application.showGame()).
@@ -49,7 +47,6 @@ export default class Application {
       Loader.saveResults(userData).
         then(() => Loader.loadResults()).
         then((data) => allStatisticsData = data).
-        then(() => console.log(allStatisticsData)).
         then(() => {
           const resultSuccessScreen = new ResultSuccessScreen(state, allStatisticsData);
           showScreen(resultSuccessScreen.element)

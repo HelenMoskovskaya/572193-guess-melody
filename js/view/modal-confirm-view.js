@@ -18,6 +18,11 @@ export default class ModalConfirmView extends AbstractView {
   `;
   }
 
+  showModalConfirm() {
+    document.body.appendChild(this.element);
+    this.element.classList.add(`modal`);
+  }
+
   bind() {
     const modalButtonElement = this.element.querySelectorAll(`.modal__button`);
     const closeButtonElement = this.element.querySelector(`.modal__close`);
@@ -50,11 +55,6 @@ export default class ModalConfirmView extends AbstractView {
 
   onCloseClick() {
 
-  }
-
-  showModalConfirm() {
-    document.body.appendChild(this.element);
-    this.element.classList.add(`modal`);
   }
 
 }

@@ -11,7 +11,7 @@ export default class WelcomeScreen {
 
     this.dotsElement = this.preloader.element.querySelector(`.loader__dots`);
     this.textElement = this.preloader.element.querySelector(`.loader__text`);
-    this.startButton = this.screen.element.querySelector(`.welcome__button`);
+    this.startButtonElement = this.screen.element.querySelector(`.welcome__button`);
     this.step = 0;
     this.bind();
   }
@@ -57,7 +57,7 @@ export default class WelcomeScreen {
   }
 
   startPreloader() {
-    this.startButton.style.visibility = `hidden`;
+    this.startButtonElement.style.visibility = `hidden`;
     this._initSettingPreloader();
     this.interval = setInterval(() => this._getPreloadInterval(), 500);
 
@@ -65,7 +65,7 @@ export default class WelcomeScreen {
 
   stopPreloader() {
     clearInterval(this.interval);
-    this.startButton.style.visibility = `visible`;
+    this.startButtonElement.style.visibility = `visible`;
     this.preloader.element.remove();
   }
 

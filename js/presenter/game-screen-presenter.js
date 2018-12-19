@@ -17,7 +17,7 @@ export default class GameScreen {
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
     this.gameContentElement = this.screen.element.querySelector(`.game__screen`);
-    this.screen.element.querySelector(`.game__screen`).insertAdjacentElement(`beforeend`, this.blockContent.element);
+    this.gameContentElement.insertAdjacentElement(`beforeend`, this.blockContent.element);
 
     this._timer = null;
     this.bind();
@@ -29,7 +29,7 @@ export default class GameScreen {
 
   _tick() {
     this.model.tick();
-    this.updateHeader();
+    this._updateHeader();
     this._timer = setTimeout(() => this._tick(), ONE_SECOND);
   }
 
@@ -54,9 +54,9 @@ export default class GameScreen {
     if (this.model.isGameGenre()) {
       const formGenreElement = this.blockContent.element.querySelector(`.game__tracks`);
       const trackGenreBtnElement = formGenreElement.querySelectorAll(`.track__button`);
-      const audioTrackGenreElement = formGenreElement.querySelectorAll(`audio`);
+      const audioTrackGenreName = formGenreElement.querySelectorAll(`audio`);
       const playButtons = [...trackGenreBtnElement];
-      const audioTracks = [...audioTrackGenreElement];
+      const audioTracks = [...audioTrackGenreName];
 
       audioTracks[0].setAttribute(`autoplay`, true);
       playButtons[0].classList.add(`track__button--pause`);
@@ -80,15 +80,15 @@ export default class GameScreen {
       });
     } else {
       const trackArtistBtnElement = this.blockContent.element.querySelector(`.track__button`);
-      const audioTrackArtistElement = this.blockContent.element.querySelector(`audio`);
+      const audioTrackArtistName = this.blockContent.element.querySelector(`audio`);
 
       const checkAudio = () => {
         if (trackArtistBtnElement.classList.contains(`track__button--pause`)) {
           trackArtistBtnElement.classList.remove(`track__button--pause`);
-          audioTrackArtistElement.pause();
+          audioTrackArtistName.pause();
         } else {
           trackArtistBtnElement.classList.add(`track__button--pause`);
-          audioTrackArtistElement.play();
+          audioTrackArtistName.play();
         }
       };
       trackArtistBtnElement.addEventListener(`click`, checkAudio);
@@ -107,48 +107,48 @@ export default class GameScreen {
     this._tick();
     this._initGame();
     this.model.restart();
-    this.updateHeader();
+    this._updateHeader();
   }
 
-  stopGame() {
+  _stopGame() {
     clearTimeout(this._timer);
   }
 
-  updateHeader() {
+  _updateHeader() {
     const header = new HeaderView(this.model.state);
     this.screen.element.replaceChild(header.element, this.blockHeader.element);
     this.blockHeader = header;
     this.blockHeader.onClick = () => {
       this.modalConfirm.showModalConfirm();
       this._tick();
-      this.stopGame();
+      this._stopGame();
     };
 
-    this.timeOut();
+    this._timeOut();
   }
 
-  updateContent() {
+  _updateContent() {
     const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
     this.gameContentElement.replaceChild(contentGame.element, this.blockContent.element);
     this.blockContent = contentGame;
     this._initGame();
   }
 
-  goToNextLevel() {
+  _goToNextLevel() {
     this.model.changeLevel();
     if (this.model.getRigthForNextLevel()) {
-      this.updateContent();
+      this._updateContent();
     } else {
       Application.showResult(this.model.state);
-      this.stopGame();
+      this._stopGame();
     }
   }
 
-  timeOut() {
+  _timeOut() {
     const timerElement = this.element.querySelector(`.timer__value`);
     if (this.model.state.time === 0) {
       Application.showResult(this.model.state);
-      this.stopGame();
+      this._stopGame();
     }
     if (this.model.state.time < 30) {
       timerElement.style.color = `red`;
@@ -163,7 +163,7 @@ export default class GameScreen {
       this.model.changeNotes();
     }
     this.model.addAnswer(result, time);
-    this.goToNextLevel();
+    this._goToNextLevel();
   }
 
   _getAnswerGenre() {
