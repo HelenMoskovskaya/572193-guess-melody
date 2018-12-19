@@ -1,9 +1,11 @@
 const SERVER_URL = `https://es.dump.academy/guess-melody`;
+const APP_ID = 572193;
+const OK_STATUS_INTERVAL_START = 200;
+const OK_STATUS_INTERVAL_FINISH = 300;
 
-const APP_ID = 5532;
 
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= OK_STATUS_INTERVAL_START && response.status < OK_STATUS_INTERVAL_FINISH) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
