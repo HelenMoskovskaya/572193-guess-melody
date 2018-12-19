@@ -17,7 +17,7 @@ export default class GameScreen {
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
     this.gameContentElement = this.screen.element.querySelector(`.game__screen`);
-    this.gameContentElement.insertAdjacentElement(`beforeend`, this.blockContent.element);
+    this.screen.element.querySelector(`.game__screen`).insertAdjacentElement(`beforeend`, this.blockContent.element);
 
     this._timer = null;
     this.bind();
@@ -37,7 +37,7 @@ export default class GameScreen {
     const buttonSubmitElement = this.blockContent.element.querySelector(`.game__submit`);
     const gameInputElement = this.blockContent.element.querySelectorAll(`.game__input`);
 
-    if (this.model.isGameGenre() === true) {
+    if (this.model.isGameGenre()) {
       buttonSubmitElement.setAttribute(`disabled`, true);
       gameInputElement.forEach((it) => {
         it.addEventListener(`click`, () => {
@@ -51,7 +51,7 @@ export default class GameScreen {
   }
 
   _playAudio() {
-    if (this.model.isGameGenre() === true) {
+    if (this.model.isGameGenre()) {
       const formGenreElement = this.blockContent.element.querySelector(`.game__tracks`);
       const trackGenreBtnElement = formGenreElement.querySelectorAll(`.track__button`);
       const audioTrackGenreElement = formGenreElement.querySelectorAll(`audio`);
