@@ -1,6 +1,3 @@
-import {INITIAL_STATE} from './data'
-
-
 export const ONE_SECOND = 1000;
 export const SECONDS_IN_MINUTES = 60;
 
@@ -63,9 +60,8 @@ export const countScore = (item) => {
 };
 
 export const getUserScore = (arr) => {
-  const userAnswers = arr.map((it) => {
-    return it = countScore(it);
-  });
+  const userAnswers = arr.map((it) => (it = countScore(it)));
+
   const userScore = userAnswers.reduce((sum, current) => {
     return sum + current;
   }, 0);

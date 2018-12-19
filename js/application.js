@@ -18,9 +18,7 @@ export default class Application {
     showScreen(welcomeScreen.element);
     welcomeScreen.startPreloader();
     Loader.loadData().
-      then((data) => {
-        return gameData = data;
-      }).
+      then((data) => (gameData = data)).
       catch(Application.showError).
       then(() => welcomeScreen.stopPreloader());
   }
@@ -41,22 +39,19 @@ export default class Application {
     if (state.notes < GameInfo.MAX_NOTES && state.time > 0) {
       Loader.saveResults(userData).
         then(() => Loader.loadResults()).
-        then((data) => {
-          return allStatisticsData = data;
-        }).
-        then(() => console.log(allStatisticsData)).
+        then((data) => (allStatisticsData = data)).
         then(() => {
           const resultSuccessScreen = new ResultSuccessScreen(state, allStatisticsData);
           showScreen(resultSuccessScreen.element);
         });
     } else {
-        const resultFailScreen = new ResultFailScreen(state);
-        showScreen(resultFailScreen.element)
-    };
+      const resultFailScreen = new ResultFailScreen(state);
+      showScreen(resultFailScreen.element);
+    }
   }
 
   static showError(error) {
     const errorScreen = new ErrorView(error);
-    errorScreen.showModal()
+    errorScreen.showModal();
   }
 }
