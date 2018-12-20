@@ -32,28 +32,8 @@ export default class WelcomeScreen {
   }
 
   _getPreloadInterval() {
-    const Stepdots = {
-      ONE: 1,
-      TWO: 2,
-      THREE: 3,
-    };
-
-    this.step++;
-    switch (this.step) {
-      case Stepdots.ONE:
-        this.dotsElement.textContent = `.`;
-        break;
-      case Stepdots.TWO:
-        this.dotsElement.textContent = `..`;
-        break;
-      case Stepdots.THREE:
-        this.dotsElement.textContent = `...`;
-        break;
-      default:
-        this.dotsElement.textContent = ``;
-        this.step = 0;
-        break;
-    }
+    this.step = (this.step + 1) % 4;
+    this.dotsElement.textContent = `${new Array(this.step).fill(`.`).join(``)}`;
   }
 
   startPreloader() {

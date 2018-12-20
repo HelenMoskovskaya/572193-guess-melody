@@ -53,10 +53,8 @@ export default class GameScreen {
   _playAudio() {
     if (this.model.isGameGenre()) {
       const formGenreElement = this.blockContent.element.querySelector(`.game__tracks`);
-      const trackGenreBtnElement = formGenreElement.querySelectorAll(`.track__button`);
-      const audioTrackGenreName = formGenreElement.querySelectorAll(`audio`);
-      const playButtons = [...trackGenreBtnElement];
-      const audioTracks = [...audioTrackGenreName];
+      const playButtons = [...formGenreElement.querySelectorAll(`.track__button`)];
+      const audioTracks = [...formGenreElement.querySelectorAll(`audio`)];
 
       audioTracks[0].setAttribute(`autoplay`, true);
       playButtons[0].classList.add(`track__button--pause`);

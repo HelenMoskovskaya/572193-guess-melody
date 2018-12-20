@@ -15,7 +15,7 @@ export default class ResultSuccessScreen {
   }
 
   bind() {
-    this.screen.onBack = () => Application.showGame();
+    this.screen.onBack = () => Application.start();
   }
 
 }
