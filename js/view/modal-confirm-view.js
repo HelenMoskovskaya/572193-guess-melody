@@ -8,6 +8,7 @@ export default class ModalConfirmView extends AbstractView {
 
   get template() {
     return `
+  <section>
     <button class="modal__close" type="button"><span class="visually-hidden">Закрыть</span></button>
     <h2 class="modal__title">Подтверждение</h2>
     <p class="modal__text">Вы уверены что хотите начать игру заново?</p>
@@ -15,6 +16,7 @@ export default class ModalConfirmView extends AbstractView {
       <button class="modal__button button">${ContentButtonModal.YES}</button>
       <button class="modal__button button">${ContentButtonModal.NO}</button>
     </div>
+  </section>
   `;
   }
 
