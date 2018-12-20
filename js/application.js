@@ -1,4 +1,4 @@
-import {showScreen, GameInfo, showModal} from './utils';
+import {showScreen, GameInfo} from './utils';
 import WelcomeScreen from './presenter/welcome-presenter';
 import GameScreen from './presenter/game-screen-presenter';
 import GameModel from './model/game-model';
@@ -18,11 +18,10 @@ export default class Application {
     showScreen(welcomeScreen.element);
     welcomeScreen.startPreloader();
     Loader.loadData().
-      then((data) => gameData = data).
+      then((data) => (gameData = data)).
       catch(Application.showError).
       then(() => welcomeScreen.stopPreloader());
   }
-
 
   static showGame() {
     const model = new GameModel(gameData);
@@ -31,35 +30,28 @@ export default class Application {
     gameScreen.startGame();
   }
 
-  static showGameReplay() {
-    Loader.loadData().
-      then((data) => gameData = data).
-      then((gameData) => Application.showGame()).
-      catch(Application.showError)
-  }
-
   static showResult(state) {
     const userData = {
       time: INITIAL_STATE.time - state.time,
       answers: state.userAnswersInfo,
-    }
-    if(state.notes < GameInfo.MAX_NOTES && state.time > 0) {
+    };
+
+    if (state.notes < GameInfo.MAX_NOTES && state.time > 0) {
       Loader.saveResults(userData).
         then(() => Loader.loadResults()).
-        then((data) => allStatisticsData = data).
+        then((data) => (allStatisticsData = data)).
         then(() => {
           const resultSuccessScreen = new ResultSuccessScreen(state, allStatisticsData);
-          showScreen(resultSuccessScreen.element)
+          showScreen(resultSuccessScreen.element);
         });
     } else {
-        const resultFailScreen = new ResultFailScreen(state);
-        showScreen(resultFailScreen.element)
+      const resultFailScreen = new ResultFailScreen(state);
+      showScreen(resultFailScreen.element);
     }
-
   }
+
   static showError(error) {
     const errorScreen = new ErrorView(error);
-    errorScreen.showModal()
+    errorScreen.showModal();
   }
 }
-
