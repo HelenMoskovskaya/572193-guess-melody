@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view';
-import {SECONDS_IN_MINUTES, formatWords, getStatResults, Dictionary, getUserScore} from '../utils';
+import {SECONDS_IN_MINUTES, formatWords, getStatResults, Dictionary, getUserScore, CountRules} from '../utils';
 import {INITIAL_STATE} from '../data';
 
 
@@ -11,7 +11,7 @@ export default class ResultSuccessView extends AbstractView {
     this.resultTime = INITIAL_STATE.time - this.state.time;
     this.minutes = Math.floor(this.resultTime / SECONDS_IN_MINUTES);
     this.seconds = this.resultTime % SECONDS_IN_MINUTES;
-    this.fastAnswers = this.state.userAnswersInfo.filter((it) => it < 30 && it >= 0);
+    this.fastAnswers = this.state.userAnswersInfo.filter((it) => it < CountRules.FAST_TIME && it >= 0);
     this.quantityFastAnswers = this.fastAnswers.length;
     this.resultText = getStatResults(this.data);
     this.bind();

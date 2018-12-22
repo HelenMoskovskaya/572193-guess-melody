@@ -1,7 +1,7 @@
 import GameScreenView from '../view/game-screen-view';
 import HeaderView from '../view/header-view';
 import GameGenreView from '../view/genre-view';
-import GameAtistView from '../view/artist-view';
+import GameArtistView from '../view/artist-view';
 import {ONE_SECOND, ContentButtonModal} from '../utils';
 import Application from '../application';
 import ModalConfirmView from '../view/modal-confirm-view';
@@ -12,7 +12,7 @@ export default class GameScreen {
 
     this.screen = new GameScreenView(this.model.currentLevel);
     this.blockHeader = new HeaderView(this.model.state);
-    this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
+    this.blockContent = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameArtistView(this.model.currentLevel);
     this.modalConfirm = new ModalConfirmView();
 
     this.screen.element.insertAdjacentElement(`afterbegin`, this.blockHeader.element);
@@ -126,7 +126,7 @@ export default class GameScreen {
   }
 
   _updateContent() {
-    const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameAtistView(this.model.currentLevel);
+    const contentGame = (this.model.isGameGenre()) ? new GameGenreView(this.model.currentLevel) : new GameArtistView(this.model.currentLevel);
     this.gameContentElement.replaceChild(contentGame.element, this.blockContent.element);
     this.blockContent = contentGame;
     this._initGame();

@@ -7,9 +7,8 @@ const OK_STATUS_INTERVAL_FINISH = 300;
 const checkStatus = (response) => {
   if (response.status >= OK_STATUS_INTERVAL_START && response.status < OK_STATUS_INTERVAL_FINISH) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 const toJSON = (res) => res.json();

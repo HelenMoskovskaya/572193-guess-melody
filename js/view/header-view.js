@@ -1,14 +1,17 @@
 import AbstractView from './abstract-view';
 import {INITIAL_STATE} from '../data';
+import {SECONDS_IN_MINUTES} from '../utils';
 
+const RADIUS = 370;
+const CIRCLE_LENGTH = Math.round(2 * Math.PI * RADIUS);
 
 const getMinutes = (time) => {
-  const result = Math.floor(time / 60);
+  const result = Math.floor(time / SECONDS_IN_MINUTES);
   return result < 10 ? `0` + result : result;
 };
 
 const getSeconds = (time)=> {
-  const result = Math.floor(time % 60);
+  const result = Math.floor(time % SECONDS_IN_MINUTES);
   return result < 10 ? `0` + result : result;
 };
 
@@ -19,10 +22,7 @@ export default class HeaderView extends AbstractView {
   }
 
   _getDash() {
-    const RADIUS = 370;
-    const CIRCLE_LENGTH = Math.round(2 * Math.PI * RADIUS);
     const time = INITIAL_STATE.time - this.state.time;
-
     const dash = {};
     dash.stroke = CIRCLE_LENGTH;
     dash.offset = Math.round(CIRCLE_LENGTH / INITIAL_STATE.time * time);
