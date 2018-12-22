@@ -2,6 +2,10 @@ import WelcomeView from '../view/welcome-view';
 import Application from '../application';
 import PreloaderView from '../view/preloader-view';
 
+const DOTS_LOAD_INTERVAL = 500;
+const ONE_DOT = 1;
+const LIMITER_FOR_DOTS = 4;
+
 export default class WelcomeScreen {
   constructor() {
     this.screen = new WelcomeView();
@@ -32,14 +36,14 @@ export default class WelcomeScreen {
   }
 
   _getPreloadInterval() {
-    this.step = (this.step + 1) % 4;
+    this.step = (this.step + ONE_DOT) % LIMITER_FOR_DOTS;
     this.dotsElement.textContent = `${new Array(this.step).fill(`.`).join(``)}`;
   }
 
   startPreloader() {
     this.startButtonElement.style.visibility = `hidden`;
     this._initSettingPreloader();
-    this.interval = setInterval(() => this._getPreloadInterval(), 500);
+    this.interval = setInterval(() => this._getPreloadInterval(), DOTS_LOAD_INTERVAL);
 
   }
 

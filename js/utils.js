@@ -9,7 +9,7 @@ export const GameInfo = {
   FAIL_RESULT: -1
 };
 
-const CountRules = {
+export const CountRules = {
   RIGHT: 1,
   WRONG: -2,
   FAST_RIGHT: 2,
@@ -46,21 +46,16 @@ export const clearArray = (arr) => {
 };
 
 export const countScore = (item) => {
-  let score = GameInfo.START_SCORE;
-
   if (item < 0) {
-    score += CountRules.WRONG;
+    return CountRules.WRONG;
   } else if (item < CountRules.FAST_TIME) {
-    score += CountRules.FAST_RIGHT;
-  } else {
-    score += CountRules.RIGHT;
+    return CountRules.FAST_RIGHT;
   }
-
-  return score;
+  return CountRules.RIGHT;
 };
 
 export const getUserScore = (arr) => {
-  const userAnswers = arr.map((it) => (it = countScore(it)));
+  const userAnswers = arr.map((it) => countScore(it));
 
   const userScore = userAnswers.reduce((sum, current) => {
     return sum + current;
@@ -81,9 +76,8 @@ export const getStatResults = (data) => {
   const getSort = (a, b) => {
     if (a.score === b.score) {
       return (a.time - b.time);
-    } else {
-      return (b.score - a.score);
     }
+    return (b.score - a.score);
   };
 
   const statPoints = allStatUsers.sort(getSort);
@@ -107,14 +101,12 @@ export const showFailResult = (state) => {
     resultTotal: `Время вышло! Вы не успели отгадать все мелодии`,
   };
 
-  let content = {};
-
   if (state.notes >= GameInfo.MAX_NOTES) {
-    content = FailTries;
+    return FailTries;
   } else if (state.time <= 0) {
-    content = FailTime;
+    return FailTime;
   }
-  return content;
+  return null;
 };
 
 export const formatWords = (n, numeralArr) => {

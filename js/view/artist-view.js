@@ -3,7 +3,7 @@ import AbstractView from './abstract-view';
 const DEBUG = true;
 const DEBUG_STYLE = `style="color: red;"`;
 
-export default class GameAtistView extends AbstractView {
+export default class GameArtistView extends AbstractView {
   constructor(level) {
     super();
     this.level = level;
